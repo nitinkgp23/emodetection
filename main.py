@@ -31,7 +31,7 @@ import normalise
 import emoji
 import unicodedata
 
-
+print("Importing done")
 # In[2]:
 
 
@@ -771,11 +771,12 @@ def grid_search(data_train, labels_train, param_grid, fit_params):
                                    char_lstm_units=clu,
                                    main_lstm_units=mlu)
                 currentConfig = 'cod_' + str(cod) + '_clu_' + str(clu) + '_mlu_' + str(mlu)
-                print('Training Configuration:',  currentConfig)
+                print('Training Configuration:',  currentConfig, flush = True)
                 history = model.fit(data_train, labels_train, 
                                     epochs = epochs,
                                     batch_size = batch_size,
-                                    validation_data = validation_data)
+                                    validation_data = validation_data,
+				    verbose = 2)
                 histories[currentConfig] = history.history
                 with open('grid_search_histories.json', 'w') as file:
                     file.write(json.dumps(histories))

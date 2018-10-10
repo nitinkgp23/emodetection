@@ -741,9 +741,9 @@ print("Retraining model on entire data to create solution file")
 # char_output_dim = [10, 15, 20]
 # char_lstm_units=[24, 32, 48, 64]
 # main_lstm_units = [128, 160, 192]
-cod = 10
+cod = 15
 clu = 48
-mlu = 192
+mlu = 160
 # param_grid = dict(char_output_dim = char_output_dim, 
 #                   char_lstm_units = char_lstm_units, 
 #                   main_lstm_units = main_lstm_units)
@@ -762,14 +762,15 @@ model = buildModel(char_output_dim=cod,
                   )
 history = model.fit(data_train, labels_train, 
                     epochs = int(NUM_EPOCHS),
-                    batch_size = BATCH_SIZE)
+                    batch_size = BATCH_SIZE,
+		    verbose=2)
 
-#model.save('EP%d_LR%de-5_LDim%d_BS%d.h5'%(NUM_EPOCHS, int(LEARNING_RATE*(10**5)), LSTM_DIM, BATCH_SIZE))
+model.save('EP%d_LR%de-5_LDim%d_BS%d.h5'%(NUM_EPOCHS, int(LEARNING_RATE*(10**5)), LSTM_DIM, BATCH_SIZE))
 #model = load_model('EP%d_LR%de-5_LDim%d_BS%d.h5'%(20, int(LEARNING_RATE*(10**5)), LSTM_DIM, BATCH_SIZE))
 
 print("Creating solution file...")
 testData = create_pad_sequences(testSequences, testSequences_char)
-predictions = model.predict(testData[0], batch_size=BATCH_SIZE)
+predictions = model.predict(testData, batch_size=BATCH_SIZE)
 predictions = predictions.argmax(axis=1)
 
 with io.open(solutionPath, "w", encoding="utf8") as fout:

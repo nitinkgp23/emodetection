@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[15]:
+# In[24]:
 
 
 import numpy as np
@@ -10,7 +10,7 @@ from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
 from keras.utils import to_categorical
 from keras.models import Sequential
-from keras.layers import Dense, Embedding, LSTM, Input, merge, TimeDistributed, concatenate
+from keras.layers import Dense, Embedding, LSTM, Input, merge, TimeDistributed, concatenate, Bidirectional
 from keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras import optimizers
 from keras.models import load_model
@@ -32,7 +32,7 @@ import emoji
 import unicodedata
 
 
-# In[16]:
+# In[3]:
 
 
 config = {
@@ -58,14 +58,14 @@ config = {
         }
 
 
-# In[17]:
+# In[4]:
 
 
 label2emotion = {0:"others", 1:"happy", 2: "sad", 3:"angry"}
 emotion2label = {"others":0, "happy":1, "sad":2, "angry":3}
 
 
-# In[18]:
+# In[5]:
 
 
 def fix_symspell():
@@ -110,7 +110,7 @@ def fix_symspell():
                                   suggestion.distance))
 
 
-# In[19]:
+# In[6]:
 
 
 trainDataPath = config["train_data_path"]
@@ -134,14 +134,14 @@ LEARNING_RATE = config["learning_rate"]
 NUM_EPOCHS = config["num_epochs"]
 
 
-# In[20]:
+# In[7]:
 
 
 with open(contractionsPath) as f:
     contractions = json.load(f)
 
 
-# In[21]:
+# In[8]:
 
 
 def preprocessData(dataFilePath, mode):
@@ -222,7 +222,7 @@ def preprocessData(dataFilePath, mode):
         return indices, conversations
 
 
-# In[22]:
+# In[9]:
 
 
 print("Processing training data...")
@@ -234,7 +234,7 @@ testIndices, testTexts = preprocessData(testDataPath, mode="test")
 # writeNormalisedData(testDataPath, testTexts)
 
 
-# In[23]:
+# In[10]:
 
 
 def getEmbeddingMatrix(wordIndex):
@@ -269,7 +269,7 @@ def getEmbeddingMatrix(wordIndex):
             
 
 
-# In[24]:
+# In[11]:
 
 
 print("Extracting tokens...")
@@ -289,7 +289,7 @@ print("Populating embedding matrix...")
 embeddingMatrix = np.load(embeddingMatrixPath)
 
 
-# In[25]:
+# In[12]:
 
 
 print("Extracting tokens/ characters...")
@@ -320,7 +320,7 @@ for s in testTexts:
 print("Found %s unique charactertokens." % len(charIndex))
 
 
-# In[26]:
+# In[13]:
 
 
 # typos = []
@@ -330,13 +330,13 @@ print("Found %s unique charactertokens." % len(charIndex))
 #               typos.append(k)
 
 
-# In[27]:
+# In[14]:
 
 
 # len(typos)
 
 
-# In[28]:
+# In[15]:
 
 
 def getMetrics(predictions, ground):
@@ -400,7 +400,7 @@ def getMetrics(predictions, ground):
     return accuracy, microPrecision, microRecall, microF1
 
 
-# In[29]:
+# In[16]:
 
 
 def writeNormalisedData(dataFilePath, texts):
@@ -429,7 +429,7 @@ def writeNormalisedData(dataFilePath, texts):
                     fout.write('\n')
 
 
-# In[30]:
+# In[17]:
 
 
 def as_keras_metric(method):
@@ -444,7 +444,7 @@ def as_keras_metric(method):
     return wrapper
 
 
-# In[31]:
+# In[28]:
 
 
 def buildModel(char_output_dim = 10,
@@ -482,7 +482,7 @@ def buildModel(char_output_dim = 10,
     
     embeddingLayer = concatenate([word_embedding, char_embedding])
     
-    lstmLayer = LSTM(units = main_lstm_units, dropout=main_dropout)(embeddingLayer)
+    lstmLayer = Bidirectional(LSTM(units = main_lstm_units, dropout=main_dropout))(embeddingLayer)
     predictions = Dense(NUM_CLASSES, activation='sigmoid')(lstmLayer)
     
     model = Model(inputs=[word_in, char_in], outputs=predictions)
@@ -504,7 +504,7 @@ def buildModel(char_output_dim = 10,
     return model
 
 
-# In[32]:
+# In[29]:
 
 
 def buildModelbase():
@@ -517,7 +517,7 @@ def buildModelbase():
                                 #input_length=MAX_SEQUENCE_LENGTH,
                                 trainable=False)(word_in)
     
-    lstmLayer = LSTM(LSTM_DIM, dropout=DROPOUT)(word_embedding)
+    lstmLayer = BiLSTM(LSTM_DIM, dropout=DROPOUT)(word_embedding)
     predictions = Dense(NUM_CLASSES, activation='sigmoid')(lstmLayer)
     
     model = Model(inputs=word_in, outputs=predictions)
@@ -531,13 +531,13 @@ def buildModelbase():
     return model
 
 
-# In[33]:
+# In[30]:
 
 
 buildModel()
 
 
-# In[34]:
+# In[21]:
 
 
 # import seaborn as sns
@@ -546,7 +546,7 @@ buildModel()
 # sns.distplot([len(i) for i in wordIndex.keys()])
 
 
-# In[35]:
+# In[22]:
 
 
 def create_pad_sequences(sequences, sequences_char):
@@ -563,7 +563,7 @@ def create_pad_sequences(sequences, sequences_char):
     return [wordseq, charseq]
 
 
-# In[36]:
+# In[23]:
 
 
 [data_wordseq,data_charseq] = create_pad_sequences(trainSequences, trainSequences_char)

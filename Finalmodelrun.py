@@ -615,7 +615,9 @@ for k in range(3):
                       )
     model.fit(xTrain, yTrain, 
               validation_data=(xVal, yVal),
-              epochs=NUM_EPOCHS, batch_size=BATCH_SIZE)
+              epochs=NUM_EPOCHS,
+              batch_size=BATCH_SIZE,
+              verbose=2)
 
     predictions = model.predict(xVal, batch_size=BATCH_SIZE)
     accuracy, microPrecision, microRecall, microF1 = getMetrics(predictions, yVal)

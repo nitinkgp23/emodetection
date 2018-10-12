@@ -54,7 +54,7 @@ config = {
           "lstm_dim" : 128,
           "learning_rate" : 0.01,
           "dropout" : 0.4,
-          "num_epochs" : 30
+          "num_epochs" : 20
         }
 
 
@@ -476,8 +476,8 @@ def buildModel(char_output_dim = 10,
                                          mask_zero=True))(char_in)
     
     # character LSTM to get word encodings by characters
-    char_embedding = TimeDistributed(LSTM(units=char_lstm_units, return_sequences=False,
-                                    recurrent_dropout=char_dropout))(emb_char)
+    char_embedding = TimeDistributed(Bidirectional(LSTM(units=char_lstm_units, return_sequences=False,
+                                    recurrent_dropout=char_dropout)))(emb_char)
 
     
     embeddingLayer = concatenate([word_embedding, char_embedding])
@@ -582,7 +582,7 @@ data_train = [data_wordseq, data_charseq]
 cod = 15
 clu = 48
 mlu = 160
-
+'''
 # Perform k-fold cross validation
 metrics = {"accuracy" : [],
            "microPrecision" : [],
@@ -637,7 +637,7 @@ print("Average Cross-Validation Micro F1 :")
 print("%.4f" % (sum(metrics["microF1"])/len(metrics["microF1"])))
 
 print("\n======================================")
-
+'''
 print("Retraining model on entire data to create solution file")
 
 

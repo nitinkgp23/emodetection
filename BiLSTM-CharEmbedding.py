@@ -43,6 +43,7 @@ config = {
           "emoji_dict_path" : "data/emoji_dict.txt",
           "fast_text_embedding_path" : "data/wiki-news-300d-1M.vec",
           "glove_embedding_path" : "data/glove.6B.100d.txt",
+          "conceptnet_path" : "data/conceptnetembed.txt"
           "contractions_path": 'data/contractions.json',
           "num_folds" : 5,
           "num_classes" : 4,
@@ -54,7 +55,7 @@ config = {
           "lstm_dim" : 128,
           "learning_rate" : 0.01,
           "dropout" : 0.4,
-          "num_epochs" : 20
+          "num_epochs" : 30
         }
 
 
@@ -120,6 +121,7 @@ embeddingMatrixPath = config["embedding_matrix_path"]
 emojiDictPath = config["emoji_dict_path"]
 fastTextEmbeddingPath = config["fast_text_embedding_path"]
 gloveEmbeddingPath = config["glove_embedding_path"]
+conceptnetEmbeddingPath = config["conceptnet_path"]
 contractionsPath = config["contractions_path"]
 NUM_FOLDS = config["num_folds"]
 NUM_CLASSES = config["num_classes"]
@@ -248,7 +250,7 @@ def getEmbeddingMatrix(wordIndex):
     embeddingsIndex = {}
     # Load the embedding vectors from ther GloVe file
     #with io.open(gloveEmbedidngPath), encoding="utf8") as f:\
-    with io.open((fastTextEmbeddingPath), encoding="utf8") as f:
+    with io.open((conceptnetEmbeddingPath), encoding="utf8") as f:
         for line in f:
             values = line.split()
             word = values[0]
@@ -282,11 +284,11 @@ wordIndex = tokenizer_word.word_index
 print("Found %s unique tokens." % len(wordIndex))
 
 print("Populating embedding matrix...")
-# embeddingMatrix = getEmbeddingMatrix(wordIndex)
+embeddingMatrix = getEmbeddingMatrix(wordIndex)
 
 # t = np.where(~embeddingMatrix.any(axis=1))[0]
-# np.save(embeddingMatrixPath, embeddingMatrix)
-embeddingMatrix = np.load(embeddingMatrixPath)
+np.save(embeddingMatrixPath, embeddingMatrix)
+#embeddingMatrix = np.load(embeddingMatrixPath)
 
 
 # In[12]:
@@ -537,15 +539,6 @@ def buildModelbase():
 buildModel()
 
 
-# In[21]:
-
-
-# import seaborn as sns
-# import matplotlib.pyplot as plt
-
-# sns.distplot([len(i) for i in wordIndex.keys()])
-
-
 # In[22]:
 
 
@@ -582,7 +575,7 @@ data_train = [data_wordseq, data_charseq]
 cod = 15
 clu = 48
 mlu = 160
-'''
+
 # Perform k-fold cross validation
 metrics = {"accuracy" : [],
            "microPrecision" : [],
@@ -637,7 +630,7 @@ print("Average Cross-Validation Micro F1 :")
 print("%.4f" % (sum(metrics["microF1"])/len(metrics["microF1"])))
 
 print("\n======================================")
-'''
+
 print("Retraining model on entire data to create solution file")
 
 

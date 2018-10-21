@@ -43,7 +43,7 @@ config = {
           "emoji_dict_path" : "data/emoji_dict.txt",
           "fast_text_embedding_path" : "data/wiki-news-300d-1M.vec",
           "glove_embedding_path" : "data/glove.6B.100d.txt",
-          "conceptnet_path" : "data/conceptnetembed.txt"
+          "conceptnet_path" : "data/conceptnetembed.txt",
           "contractions_path": 'data/contractions.json',
           "num_folds" : 5,
           "num_classes" : 4,
@@ -55,7 +55,7 @@ config = {
           "lstm_dim" : 128,
           "learning_rate" : 0.01,
           "dropout" : 0.4,
-          "num_epochs" : 30
+          "num_epochs" : 20
         }
 
 

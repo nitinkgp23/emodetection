@@ -1,7 +1,7 @@
-#!/usr/bin/env python
+
 # coding: utf-8
 
-# In[1]:
+# In[24]:
 
 
 import numpy as np
@@ -10,7 +10,7 @@ from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
 from keras.utils import to_categorical
 from keras.models import Sequential
-from keras.layers import Dense, Embedding, LSTM, Input, merge, TimeDistributed, concatenate
+from keras.layers import Dense, Embedding, LSTM, Input, merge, TimeDistributed, concatenate, Bidirectional
 from keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras import optimizers
 from keras.models import load_model
@@ -25,200 +25,24 @@ import sys
 from keras.layers.core import *
 from keras.models import *
 import normalise
-#from symspellpy.symspellpy import SymSpell, Verbosity
-#from pycontractions import Contractions
 
 import emoji
 import unicodedata
-
-print("Importing done")
-# In[2]:
-
-
-label2emotion = {0:"others", 1:"happy", 2: "sad", 3:"angry"}
-emotion2label = {"others":0, "happy":1, "sad":2, "angry":3}
 
 
 # In[3]:
 
 
-def fix_symspell():
-    # create object
-    initial_capacity = 83000
-    # maximum edit distance per dictionary precalculation
-    max_edit_distance_dictionary = 2
-    prefix_length = 7
-    sym_spell = SymSpell(initial_capacity, max_edit_distance_dictionary,
-                         prefix_length)
-    # load dictionary
-    dictionary_path = "data/frequency_dictionary_en_82_765.txt"
-    term_index = 0  # column of the term in the dictionary text file
-    count_index = 1  # column of the term frequency in the dictionary text file
-    if not sym_spell.load_dictionary(dictionary_path, term_index, count_index):
-        print("Dictionary file not found")
-        return
-
-    # lookup suggestions for single-word input strings
-    input_term = "i'm"  # misspelling of "members"
-    # max edit distance per lookup
-    # (max_edit_distance_lookup <= max_edit_distance_dictionary)
-    max_edit_distance_lookup = 2
-    suggestion_verbosity = Verbosity.CLOSEST  # TOP, CLOSEST, ALL
-    suggestions = sym_spell.lookup(input_term, suggestion_verbosity,
-                                   max_edit_distance_lookup)
-    # display suggestion term, term frequency, and edit distance
-    for suggestion in suggestions:
-        print("{}, {}, {}".format(suggestion.term, suggestion.count,
-                                  suggestion.distance))
-
-    # lookup suggestions for multi-word input strings (supports compound
-    # splitting & merging)
-    input_term = ("don't worry i'm girl <eos> hmm how do i know if you are <eos> what's ur name ?")
-    # max edit distance per lookup (per single word, not per whole input string)
-    max_edit_distance_lookup = 2
-    suggestions = sym_spell.lookup_compound(input_term,
-                                            max_edit_distance_lookup)
-    # display suggestion term, edit distance, and term frequency
-    for suggestion in suggestions:
-        print("{}, {}, {}".format(suggestion.term, suggestion.count,
-                                  suggestion.distance))
-
-
-# In[4]:
-
-
-contractions = { 
-"ain't": "am not",
-"aren't": "are not",
-"can't": "cannot",
-"can't've": "cannot have",
-"'cause": "because",
-"could've": "could have",
-"couldn't": "could not",
-"couldn't've": "could not have",
-"didn't": "did not",
-"doesn't": "does not",
-"don't": "do not",
-"hadn't": "had not",
-"hadn't've": "had not have",
-"hasn't": "has not",
-"haven't": "have not",
-"he'd": "he would",
-"he'd've": "he would have",
-"he'll": "he will",
-"he'll've": "he will have",
-"he's": "he is",
-"how'd": "how did",
-"how'd'y": "how do you",
-"how'll": "how will",
-"how's": "how is",
-"i'd": "I would",
-"i'd've": "I would have",
-"i'll": "I will",
-"i'll've": "I will have",
-"i'm": "I am",
-"i've": "I have",
-"isn't": "is not",
-"it'd": "it would",
-"it'd've": "it would have",
-"it'll": "it will",
-"it'll've": "it will have",
-"it's": "it is",
-"let's": "let us",
-"ma'am": "madam",
-"mayn't": "may not",
-"might've": "might have",
-"mightn't": "might not",
-"mightn't've": "might not have",
-"must've": "must have",
-"mustn't": "must not",
-"mustn't've": "must not have",
-"needn't": "need not",
-"needn't've": "need not have",
-"o'clock": "of the clock",
-"oughtn't": "ought not",
-"oughtn't've": "ought not have",
-"shan't": "shall not",
-"sha'n't": "shall not",
-"shan't've": "shall not have",
-"she'd": "she would",
-"she'd've": "she would have",
-"she'll": "she will",
-"she'll've": "she will have",
-"she's": "she is",
-"should've": "should have",
-"shouldn't": "should not",
-"shouldn't've": "should not have",
-"so've": "so have",
-"so's": "so is",
-"that'd": "that would",
-"that'd've": "that would have",
-"that's": "that is",
-"there'd": "there would",
-"there'd've": "there would have",
-"there's": "there is",
-"they'd": "they would",
-"they'd've": "they would have",
-"they'll": "they will",
-"they'll've": "they will have",
-"they're": "they are",
-"they've": "they have",
-"to've": "to have",
-"wasn't": "was not",
-"we'd": "we would",
-"we'd've": "we would have",
-"we'll": "we will",
-"we'll've": "we will have",
-"we're": "we are",
-"we've": "we have",
-"weren't": "were not",
-"what'll": "what will",
-"what'll've": "what will have",
-"what're": "what are",
-"what's": "what is",
-"what've": "what have",
-"when's": "when is",
-"when've": "when have",
-"where'd": "where did",
-"where's": "where is",
-"where've": "where have",
-"who'll": "who will",
-"who'll've": "who will have",
-"who's": "who is",
-"who've": "who have",
-"why's": "why is",
-"why've": "why have",
-"will've": "will have",
-"won't": "will not",
-"won't've": "will not have",
-"would've": "would have",
-"wouldn't": "would not",
-"wouldn't've": "would not have",
-"y'all": "you all",
-"y'all'd": "you all would",
-"y'all'd've": "you all would have",
-"y'all're": "you all are",
-"y'all've": "you all have",
-"you'd": "you would",
-"you'd've": "you would have",
-"you'll": "you will",
-"you'll've": "you will have",
-"you're": "you are",
-"you've": "you have"
-}
-
-
-# In[5]:
-
-
 config = {
           "train_data_path" : "data/train.txt",
           "test_data_path" : "data/devwithoutlabels.txt",
-          "solution_path" : "data/test.txt",
-          "embedding_matrix_path" : "data/embedding_fasttext.npy",
+          "solution_path" : "test.txt",
+          "embedding_matrix_path" : "data/embedding_conceptnet.npy",   ## change this accordingly
           "emoji_dict_path" : "data/emoji_dict.txt",
           "fast_text_embedding_path" : "data/wiki-news-300d-1M.vec",
           "glove_embedding_path" : "data/glove.6B.100d.txt",
+          "conceptnet_path" : "data/conceptnetembed.txt",
+          "contractions_path": 'data/contractions.json',
           "num_folds" : 5,
           "num_classes" : 4,
           "max_nb_words" : 20000,
@@ -229,8 +53,15 @@ config = {
           "lstm_dim" : 128,
           "learning_rate" : 0.01,
           "dropout" : 0.4,
-          "num_epochs" : 30
+          "num_epochs" : 20
         }
+
+
+# In[4]:
+
+
+label2emotion = {0:"others", 1:"happy", 2: "sad", 3:"angry"}
+emotion2label = {"others":0, "happy":1, "sad":2, "angry":3}
 
 
 # In[6]:
@@ -243,7 +74,8 @@ embeddingMatrixPath = config["embedding_matrix_path"]
 emojiDictPath = config["emoji_dict_path"]
 fastTextEmbeddingPath = config["fast_text_embedding_path"]
 gloveEmbeddingPath = config["glove_embedding_path"]
-
+conceptnetEmbeddingPath = config["conceptnet_path"]
+contractionsPath = config["contractions_path"]
 NUM_FOLDS = config["num_folds"]
 NUM_CLASSES = config["num_classes"]
 MAX_NB_WORDS = config["max_nb_words"]
@@ -258,6 +90,13 @@ NUM_EPOCHS = config["num_epochs"]
 
 
 # In[7]:
+
+
+with open(contractionsPath) as f:
+    contractions = json.load(f)
+
+
+# In[8]:
 
 
 def preprocessData(dataFilePath, mode):
@@ -306,12 +145,12 @@ def preprocessData(dataFilePath, mode):
             full_expanded = []
             for c in line[1:4]:
                 #replace emojis
-                d = c
-                for character in c:
-                    if character in emoji.UNICODE_EMOJI:
-                        #print(c)
-                        uni = 'U+' + hex(ord(character))[2:].upper()
-                        d = d.replace(character, ' '+emoji_dict[uni]+' ')
+                 d = c
+#                 for character in c:
+#                     if character in emoji.UNICODE_EMOJI:
+#                         #print(c)
+#                         uni = 'U+' + hex(ord(character))[2:].upper()
+#                         d = d.replace(character, ' '+emoji_dict[uni]+' ')
                 
                 expanded = []
                 words = d.split()
@@ -338,7 +177,7 @@ def preprocessData(dataFilePath, mode):
         return indices, conversations
 
 
-# In[8]:
+# In[9]:
 
 
 print("Processing training data...")
@@ -350,7 +189,7 @@ testIndices, testTexts = preprocessData(testDataPath, mode="test")
 # writeNormalisedData(testDataPath, testTexts)
 
 
-# In[9]:
+# In[10]:
 
 
 def getEmbeddingMatrix(wordIndex):
@@ -364,7 +203,7 @@ def getEmbeddingMatrix(wordIndex):
     embeddingsIndex = {}
     # Load the embedding vectors from ther GloVe file
     #with io.open(gloveEmbedidngPath), encoding="utf8") as f:\
-    with io.open((fastTextEmbeddingPath), encoding="utf8") as f:
+    with io.open((conceptnetEmbeddingPath), encoding="utf8") as f:
         for line in f:
             values = line.split()
             word = values[0]
@@ -385,7 +224,7 @@ def getEmbeddingMatrix(wordIndex):
             
 
 
-# In[10]:
+# In[11]:
 
 
 print("Extracting tokens...")
@@ -398,14 +237,14 @@ wordIndex = tokenizer_word.word_index
 print("Found %s unique tokens." % len(wordIndex))
 
 print("Populating embedding matrix...")
-# embeddingMatrix = getEmbeddingMatrix(wordIndex)
+embeddingMatrix = getEmbeddingMatrix(wordIndex)
 
 # t = np.where(~embeddingMatrix.any(axis=1))[0]
-# np.save(embeddingMatrixPath, embeddingMatrix)
-embeddingMatrix = np.load(embeddingMatrixPath)
+np.save(embeddingMatrixPath, embeddingMatrix)
+#embeddingMatrix = np.load(embeddingMatrixPath)
 
 
-# In[11]:
+# In[12]:
 
 
 print("Extracting tokens/ characters...")
@@ -436,7 +275,7 @@ for s in testTexts:
 print("Found %s unique charactertokens." % len(charIndex))
 
 
-# In[ ]:
+# In[13]:
 
 
 # typos = []
@@ -446,13 +285,13 @@ print("Found %s unique charactertokens." % len(charIndex))
 #               typos.append(k)
 
 
-# In[ ]:
+# In[14]:
 
 
 # len(typos)
 
 
-# In[ ]:
+# In[15]:
 
 
 def getMetrics(predictions, ground):
@@ -516,7 +355,7 @@ def getMetrics(predictions, ground):
     return accuracy, microPrecision, microRecall, microF1
 
 
-# In[ ]:
+# In[16]:
 
 
 def writeNormalisedData(dataFilePath, texts):
@@ -545,7 +384,7 @@ def writeNormalisedData(dataFilePath, texts):
                     fout.write('\n')
 
 
-# In[ ]:
+# In[17]:
 
 
 def as_keras_metric(method):
@@ -560,7 +399,7 @@ def as_keras_metric(method):
     return wrapper
 
 
-# In[ ]:
+# In[28]:
 
 
 def buildModel(char_output_dim = 10,
@@ -592,13 +431,13 @@ def buildModel(char_output_dim = 10,
                                          mask_zero=True))(char_in)
     
     # character LSTM to get word encodings by characters
-    char_embedding = TimeDistributed(LSTM(units=char_lstm_units, return_sequences=False,
-                                    recurrent_dropout=char_dropout))(emb_char)
+    char_embedding = TimeDistributed(Bidirectional(LSTM(units=char_lstm_units, return_sequences=False,
+                                    recurrent_dropout=char_dropout)))(emb_char)
 
     
     embeddingLayer = concatenate([word_embedding, char_embedding])
     
-    lstmLayer = LSTM(units = main_lstm_units, dropout=main_dropout)(embeddingLayer)
+    lstmLayer = Bidirectional(LSTM(units = main_lstm_units, dropout=main_dropout))(embeddingLayer)
     predictions = Dense(NUM_CLASSES, activation='sigmoid')(lstmLayer)
     
     model = Model(inputs=[word_in, char_in], outputs=predictions)
@@ -620,7 +459,7 @@ def buildModel(char_output_dim = 10,
     return model
 
 
-# In[ ]:
+# In[29]:
 
 
 def buildModelbase():
@@ -633,7 +472,7 @@ def buildModelbase():
                                 #input_length=MAX_SEQUENCE_LENGTH,
                                 trainable=False)(word_in)
     
-    lstmLayer = LSTM(LSTM_DIM, dropout=DROPOUT)(word_embedding)
+    lstmLayer = BiLSTM(LSTM_DIM, dropout=DROPOUT)(word_embedding)
     predictions = Dense(NUM_CLASSES, activation='sigmoid')(lstmLayer)
     
     model = Model(inputs=word_in, outputs=predictions)
@@ -647,91 +486,13 @@ def buildModelbase():
     return model
 
 
-# In[ ]:
+# In[30]:
 
 
 buildModel()
 
 
-# In[ ]:
-
-
-# TIME_STEPS = 100
-# INPUT_DIM = 100
-# SINGLE_ATTENTION_VECTOR = False
-
-# def attention_3d_block(inputs):
-#     # inputs.shape = (batch_size, time_steps, input_dim)
-#     input_dim = int(inputs.shape[2])
-#     a = Permute((2, 1))(inputs)
-#     a = Reshape((input_dim, TIME_STEPS))(a) # this line is not useful. It's just to know which dimension is what.
-#     a = Dense(TIME_STEPS, activation='softmax')(a)
-#     if SINGLE_ATTENTION_VECTOR:
-#         a = Lambda(lambda x: K.mean(x, axis=1), name='dim_reduction')(a)
-#         a = RepeatVector(input_dim)(a)
-#     a_probs = Permute((2, 1), name='attention_vec')(a)
-#     output_attention_mul = merge([inputs, a_probs], name='attention_mul', mode='mul')
-#     return output_attention_mul
-
-# def buildModelAttention(embeddingMatrix):
-#     """Constructs the architecture of the model
-#     Input:
-#         embeddingMatrix : The embedding matrix to be loaded in the embedding layer.
-#     Output:
-#         model : A basic LSTM model
-#     """
-#     embeddingLayer = Embedding(embeddingMatrix.shape[0],
-#                                EMBEDDING_DIM,
-#                                 weights=[embeddingMatrix],
-#                                 input_length=MAX_SEQUENCE_LENGTH,
-#                                 trainable=False)
-#     model = Sequential()
-#     model.add(embeddingLayer)
-# 	#model.add(LSTM(LSTM_DIM, dropout=DROPOUT))
-#     #model.add(Dense(NUM_CLASSES, activation='sigmoid'))
-
-#     #inputs = Input(shape=(TIME_STEPS, INPUT_DIM,))
-#     #inputs = tf.convert_to_tensor(embeddingMatrix, np.float32)
-
-#     #lstm_out = LSTM(LSTM_DIM, return_sequences=True)(inputs)
-#     model.add(Lambda(attention_3d_block))
-
-#     model.add(LSTM(LSTM_DIM, return_sequences=True))
-#     model.add(Lambda(attention_3d_block))
-
-#  	#attention_mul = attention_3d_block(lstm_out)
-#     #attention_mul = Flatten()(attention_mul)
-#     model.add(Flatten())
-#     #output = Dense(4, activation='sigmoid')(attention_mul)
-#     model.add(Dense(4, activation='sigmoid'))
-#     #model = Model(input=[embeddingLayer], output=output)
-
-#     model.summary()
-
-#     rmsprop = optimizers.rmsprop(lr=LEARNING_RATE)
-#     model.compile(loss='categorical_crossentropy',
-#                   optimizer=rmsprop,
-#                   metrics=['acc'])
-
-#     return model
-
-
-# In[ ]:
-
-
-# import seaborn as sns
-# import matplotlib.pyplot as plt
-
-# sns.distplot([len(i) for i in wordIndex.keys()])
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
+# In[22]:
 
 
 def create_pad_sequences(sequences, sequences_char):
@@ -748,43 +509,7 @@ def create_pad_sequences(sequences, sequences_char):
     return [wordseq, charseq]
 
 
-# In[ ]:
-
-
-def grid_search(data_train, labels_train, param_grid, fit_params):
-    char_output_dim = param_grid['char_output_dim']
-    char_lstm_units = param_grid['char_lstm_units']
-    main_lstm_units = param_grid['main_lstm_units']
-    
-    batch_size = fit_params['batch_size']
-    epochs = fit_params['epochs']
-    validation_data = fit_params['validation_data']
-    
-    histories = {}
-#     cod = char_output_dim[0]
-#     clu = char_lstm_units[0]
-#     mlu = main_lstm_units[0]
-    for cod in char_output_dim:
-        for clu in char_lstm_units:
-            for mlu in main_lstm_units:
-                model = buildModel(char_output_dim=cod,
-                                   char_lstm_units=clu,
-                                   main_lstm_units=mlu)
-                currentConfig = 'cod_' + str(cod) + '_clu_' + str(clu) + '_mlu_' + str(mlu)
-                print('Training Configuration:',  currentConfig, flush = True)
-                history = model.fit(data_train, labels_train, 
-                                    epochs = epochs,
-                                    batch_size = batch_size,
-                                    validation_data = validation_data,
-				    verbose = 2)
-                histories[currentConfig] = history.history
-                with open('grid_search_histories.json', 'w') as file:
-                    file.write(json.dumps(histories))
-    return histories
-                
-
-
-# In[ ]:
+# In[23]:
 
 
 [data_wordseq,data_charseq] = create_pad_sequences(trainSequences, trainSequences_char)
@@ -793,25 +518,17 @@ labels = to_categorical(np.asarray(labels_pre))
 # Randomize data
 np.random.seed(10)
 np.random.shuffle(trainIndices)
-lim = int(0.85*len(trainSequences))
-data_wordseq_train = data_wordseq[trainIndices][:lim]
-data_charseq_train = data_charseq[trainIndices][:lim]
-labels_train = labels[trainIndices][:lim]
+# lim = int(0.85*len(trainSequences))
+data_wordseq = data_wordseq[trainIndices]
+data_charseq = data_charseq[trainIndices]
+labels_train = labels[trainIndices]
 
-data_wordseq_valid = data_wordseq[trainIndices][lim:]
-data_charseq_valid = data_charseq[trainIndices][lim:]
-labels_valid = labels[trainIndices][lim:]
+data_train = [data_wordseq, data_charseq]
 
-data_train = [data_wordseq_train, data_charseq_train]
-data_valid = [data_wordseq_valid, data_charseq_valid]
+cod = 15
+clu = 48
+mlu = 160
 
-# data_train = data_wordseq_train
-# data_valid = data_wordseq_valid
-
-print("Shape of training data tensor: ", data_train[0].shape, data_train[1].shape)
-print("Shape of validation data tensor: ", data_valid[0].shape, data_valid[1].shape)
-print("Shape of label tensor: ", labels_train.shape, labels_valid.shape)
-'''
 # Perform k-fold cross validation
 metrics = {"accuracy" : [],
            "microPrecision" : [],
@@ -819,22 +536,34 @@ metrics = {"accuracy" : [],
            "microF1" : []}
 
 print("Starting k-fold cross validation...")
-for k in range(NUM_FOLDS):
+for k in range(3):
     print('-'*40)
-    print("Fold %d/%d" % (k+1, NUM_FOLDS))
-    validationSize = int(len(data)/NUM_FOLDS)
+    print("Fold {}/{}".format(k+1, NUM_FOLDS))
+    validationSize = int(len(labels_train)/NUM_FOLDS)
     index1 = validationSize * k
     index2 = validationSize * (k+1)
 
-    xTrain = np.vstack((data[:index1],data[index2:]))
-    yTrain = np.vstack((labels[:index1],labels[index2:]))
-    xVal = data[index1:index2]
-    yVal = labels[index1:index2]
+    xTrain_word = np.vstack((data_wordseq[:index1],data_wordseq[index2:]))
+    xTrain_char = np.vstack((data_charseq[:index1],data_charseq[index2:]))
+    yTrain = np.vstack((labels_train[:index1],labels_train[index2:]))
+    xTrain = [xTrain_word, xTrain_char]
+
+    xVal_word = data_wordseq[index1:index2]
+    xVal_char = data_charseq[index1:index2]
+    yVal = labels_train[index1:index2]
+    xVal = [xVal_word, xVal_char]
+
+    
     print("Building model...")
-    model = buildModel(embeddingMatrix)
+    model = buildModel(char_output_dim=cod,
+                       char_lstm_units=clu,
+                       main_lstm_units=mlu
+                      )
     model.fit(xTrain, yTrain, 
               validation_data=(xVal, yVal),
-              epochs=NUM_EPOCHS, batch_size=BATCH_SIZE)
+              epochs=NUM_EPOCHS,
+              batch_size=BATCH_SIZE,
+              verbose=2)
 
     predictions = model.predict(xVal, batch_size=BATCH_SIZE)
     accuracy, microPrecision, microRecall, microF1 = getMetrics(predictions, yVal)
@@ -844,61 +573,45 @@ for k in range(NUM_FOLDS):
     metrics["microF1"].append(microF1)
 
 print("\n============= Metrics =================")
-print("Average Cross-Validation Accuracy : %.4f" % (sum(metrics["accuracy"])/len(metrics["accuracy"])))
-print("Average Cross-Validation Micro Precision : %.4f" % (sum(metrics["microPrecision"])/len(metrics["microPrecision"])))
-print("Average Cross-Validation Micro Recall : %.4f" % (sum(metrics["microRecall"])/len(metrics["microRecall"])))
-print("Average Cross-Validation Micro F1 : %.4f" % (sum(metrics["microF1"])/len(metrics["microF1"])))
+print("Average Cross-Validation Accuracy : ")
+print("%.4f" % (sum(metrics["accuracy"])/len(metrics["accuracy"])))
+print("Average Cross-Validation Micro Precision :")
+print("%.4f" % (sum(metrics["microPrecision"])/len(metrics["microPrecision"])))
+print("Average Cross-Validation Micro Recall :")
+print("%.4f" % (sum(metrics["microRecall"])/len(metrics["microRecall"])))
+print("Average Cross-Validation Micro F1 :")
+print("%.4f" % (sum(metrics["microF1"])/len(metrics["microF1"])))
 
 print("\n======================================")
-'''
+
 print("Retraining model on entire data to create solution file")
 
-# define the grid search parameters
-char_output_dim = [10, 15, 20]
-char_lstm_units=[24, 32, 48, 64]
-main_lstm_units = [128, 160, 192]
 
-param_grid = dict(char_output_dim = char_output_dim, 
-                  char_lstm_units = char_lstm_units, 
-                  main_lstm_units = main_lstm_units)
-fit_params = dict(batch_size = 64,
-                  epochs = 50,
-                  validation_data=(data_valid, labels_valid))
+model = buildModel(char_output_dim=cod,
+                   char_lstm_units=clu,
+                   main_lstm_units=mlu
+                  )
+history = model.fit(data_train, labels_train, 
+                    epochs = int(NUM_EPOCHS),
+                    batch_size = BATCH_SIZE,
+                    verbose=2)
 
-histories = grid_search(data_train=data_train,
-                        labels_train = labels_train,
-                        param_grid=param_grid,
-                        fit_params=fit_params)
-
-# model = buildModel(embeddingMatrix)
-# history = []
-# callbacks = [
-#     EarlyStopping(monitor='val_loss', patience=2, verbose=1),
-#     ModelCheckpoint(filepath='/tmp/weights.hdf5', monitor='val_loss', save_best_only=True, verbose=0),
-# ]
-# for i in range(5):
-# history.append(model.fit(data_train, labels_train,
-#                          epochs=int(NUM_EPOCHS),
-#                          batch_size=BATCH_SIZE,
-#                          #callbacks = callbacks,
-#                          validation_data=(data_valid, labels_valid)
-#                         ))
 #model.save('EP%d_LR%de-5_LDim%d_BS%d.h5'%(NUM_EPOCHS, int(LEARNING_RATE*(10**5)), LSTM_DIM, BATCH_SIZE))
 #model = load_model('EP%d_LR%de-5_LDim%d_BS%d.h5'%(20, int(LEARNING_RATE*(10**5)), LSTM_DIM, BATCH_SIZE))
 
-# print("Creating solution file...")
-# testData = create_pad_sequences(testSequences, testSequences_char)
-# predictions = model.predict(testData[0], batch_size=BATCH_SIZE)
-# predictions = predictions.argmax(axis=1)
+print("Creating solution file...")
+testData = create_pad_sequences(testSequences, testSequences_char)
+predictions = model.predict(testData, batch_size=BATCH_SIZE)
+predictions = predictions.argmax(axis=1)
 
-# with io.open(solutionPath, "w", encoding="utf8") as fout:
-#     fout.write('\t'.join(["id", "turn1", "turn2", "turn3", "label"]) + '\n')        
-#     with io.open(testDataPath, encoding="utf8") as fin:
-#         fin.readline()
-#         for lineNum, line in enumerate(fin):
-#             fout.write('\t'.join(line.strip().split('\t')[:4]) + '\t')
-#             fout.write(label2emotion[predictions[lineNum]] + '\n')
-# print("Completed. Model parameters: ")
-# print("Learning rate : %.3f, LSTM Dim : %d, Dropout : %.3f, Batch_size : %d" 
-#       % (LEARNING_RATE, LSTM_DIM, DROPOUT, BATCH_SIZE))
+with io.open(solutionPath, "w", encoding="utf8") as fout:
+    fout.write('\t'.join(["id", "turn1", "turn2", "turn3", "label"]) + '\n')        
+    with io.open(testDataPath, encoding="utf8") as fin:
+        fin.readline()
+        for lineNum, line in enumerate(fin):
+            fout.write('\t'.join(line.strip().split('\t')[:4]) + '\t')
+            fout.write(label2emotion[predictions[lineNum]] + '\n')
+print("Completed. Model parameters: ")
+print("Learning rate : %.3f, LSTM Dim : %d, Dropout : %.3f, Batch_size : %d" 
+      % (LEARNING_RATE, LSTM_DIM, DROPOUT, BATCH_SIZE))
 

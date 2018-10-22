@@ -145,13 +145,13 @@ def preprocessData(dataFilePath, mode):
             full_expanded = []
             for c in line[1:4]:
                 #replace emojis
-                 d = c
+                d = c
 #                 for character in c:
 #                     if character in emoji.UNICODE_EMOJI:
 #                         #print(c)
 #                         uni = 'U+' + hex(ord(character))[2:].upper()
 #                         d = d.replace(character, ' '+emoji_dict[uni]+' ')
-                
+
                 expanded = []
                 words = d.split()
                 for word in words:

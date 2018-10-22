@@ -296,10 +296,7 @@ def preprocessData(dataFilePath, mode):
             
             indices.append(int(line[0]))
             conversations.append(conv.lower())
-            
-            count+=1
-            if count > 20:
-                break
+
 
     if mode == "train":
         return indices, conversations, labels
@@ -367,10 +364,10 @@ wordIndex = tokenizer_word.word_index
 print("Found %s unique tokens." % len(wordIndex))
 
 print("Populating embedding matrix...")
-embeddingMatrix = getEmbeddingMatrix(wordIndex)
-#embeddingMatrix = np.load(embeddingMatrixPath)
-t = np.where(~embeddingMatrix.any(axis=1))[0]
-np.save(embeddingMatrixPath, embeddingMatrix)
+#embeddingMatrix = getEmbeddingMatrix(wordIndex)
+embeddingMatrix = np.load(embeddingMatrixPath)
+#t = np.where(~embeddingMatrix.any(axis=1))[0]
+#np.save(embeddingMatrixPath, embeddingMatrix)
 
 
 # In[31]:

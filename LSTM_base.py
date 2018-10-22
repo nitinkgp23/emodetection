@@ -54,9 +54,9 @@ config = {
           "embedding_dim" : 300,
           "batch_size" : 256,
           "lstm_dim" : 128,
-          "learning_rate" : 0.01,
+          "learning_rate" : 0.005,
           "dropout" : 0.4,
-          "num_epochs" : 20
+          "num_epochs" : 80
         }
 
 
@@ -458,7 +458,8 @@ for k in range(3):
     model = buildModel()
     model.fit(xTrain, yTrain, 
               validation_data=(xVal, yVal),
-              epochs=NUM_EPOCHS, batch_size=BATCH_SIZE)
+              epochs=NUM_EPOCHS, batch_size=BATCH_SIZE,
+	      verbose=2)
 
     predictions = model.predict(xVal, batch_size=BATCH_SIZE)
     accuracy, microPrecision, microRecall, microF1 = getMetrics(predictions, yVal)
@@ -485,8 +486,8 @@ history = model.fit(data_train, labels_train,
                          epochs=int(NUM_EPOCHS),
                          batch_size=BATCH_SIZE,
                          #callbacks = callbacks,
-                         validation_data=(data_valid, labels_valid)
-                   )
+                         validation_data=(data_valid, labels_valid),
+                         verbose=2)
 #model.save('EP%d_LR%de-5_LDim%d_BS%d.h5'%(NUM_EPOCHS, int(LEARNING_RATE*(10**5)), LSTM_DIM, BATCH_SIZE))
 #model = load_model('EP%d_LR%de-5_LDim%d_BS%d.h5'%(20, int(LEARNING_RATE*(10**5)), LSTM_DIM, BATCH_SIZE))
 

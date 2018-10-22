@@ -1,0 +1,116 @@
+Processing training data...
+Processing test data...
+Extracting tokens...
+Found 14838 unique tokens.
+Populating embedding matrix...
+Extracting tokens/ characters...
+Found 134 unique charactertokens.
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+input_1 (InputLayer)         (None, 100)               0         
+_________________________________________________________________
+embedding_1 (Embedding)      (None, 100, 300)          5026200   
+_________________________________________________________________
+bidirectional_1 (Bidirection (None, 256)               439296    
+_________________________________________________________________
+dense_1 (Dense)              (None, 4)                 1028      
+=================================================================
+Total params: 5,466,524
+Trainable params: 440,324
+Non-trainable params: 5,026,200
+_________________________________________________________________
+Starting k-fold cross validation...
+----------------------------------------
+Fold 1/5
+Building model...
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+input_2 (InputLayer)         (None, 100)               0         
+_________________________________________________________________
+embedding_2 (Embedding)      (None, 100, 300)          5026200   
+_________________________________________________________________
+bidirectional_2 (Bidirection (None, 256)               439296    
+_________________________________________________________________
+dense_2 (Dense)              (None, 4)                 1028      
+=================================================================
+Total params: 5,466,524
+Trainable params: 440,324
+Non-trainable params: 5,026,200
+_________________________________________________________________
+Train on 24128 samples, validate on 6032 samples
+Epoch 1/20
+ - 31s - loss: 1.2745 - acc: 0.4859 - val_loss: 1.2760 - val_acc: 0.4995
+Epoch 2/20
+ - 30s - loss: 1.2571 - acc: 0.4947 - val_loss: 1.3237 - val_acc: 0.4995
+Epoch 3/20
+ - 31s - loss: 1.2577 - acc: 0.4947 - val_loss: 1.2407 - val_acc: 0.4995
+Epoch 4/20
+ - 30s - loss: 1.2555 - acc: 0.4947 - val_loss: 1.2692 - val_acc: 0.4995
+Epoch 5/20
+ - 30s - loss: 1.2548 - acc: 0.4947 - val_loss: 1.2607 - val_acc: 0.4995
+Epoch 6/20
+ - 30s - loss: 1.2564 - acc: 0.4947 - val_loss: 1.2621 - val_acc: 0.4995
+Epoch 7/20
+ - 31s - loss: 1.2554 - acc: 0.4947 - val_loss: 1.2598 - val_acc: 0.4995
+Epoch 8/20
+ - 30s - loss: 1.2548 - acc: 0.4947 - val_loss: 1.2667 - val_acc: 0.4995
+Epoch 9/20
+ - 30s - loss: 1.2567 - acc: 0.4947 - val_loss: 1.2581 - val_acc: 0.4995
+Epoch 10/20
+ - 30s - loss: 1.2538 - acc: 0.4947 - val_loss: 1.2429 - val_acc: 0.4995
+Epoch 11/20
+ - 30s - loss: 1.2935 - acc: 0.4947 - val_loss: 1.2635 - val_acc: 0.4995
+Epoch 12/20
+ - 31s - loss: 1.2611 - acc: 0.4947 - val_loss: 1.2972 - val_acc: 0.4995
+Epoch 13/20
+ - 30s - loss: 1.2590 - acc: 0.4947 - val_loss: 1.2428 - val_acc: 0.4995
+Epoch 14/20
+ - 30s - loss: 1.2567 - acc: 0.4947 - val_loss: 1.2978 - val_acc: 0.4995
+Epoch 15/20
+ - 30s - loss: 1.2619 - acc: 0.4947 - val_loss: 1.2654 - val_acc: 0.4995
+Epoch 16/20
+ - 30s - loss: 1.2599 - acc: 0.4947 - val_loss: 1.2837 - val_acc: 0.4995
+Epoch 17/20
+ - 30s - loss: 1.2569 - acc: 0.4947 - val_loss: 1.2472 - val_acc: 0.4995
+Epoch 18/20
+ - 30s - loss: 1.2564 - acc: 0.4947 - val_loss: 1.2976 - val_acc: 0.4995
+Epoch 19/20
+ - 30s - loss: 1.2560 - acc: 0.4947 - val_loss: 1.2851 - val_acc: 0.4995
+Epoch 20/20
+ - 31s - loss: 1.2558 - acc: 0.4947 - val_loss: 1.2724 - val_acc: 0.4995
+True Positives per class :  [3013.  817. 1079. 1123.]
+False Positives per class :  [3019. 5215. 4953. 4909.]
+False Negatives per class :  [0. 0. 0. 0.]
+Class happy : Precision : 0.135, Recall : 1.000, F1 : 0.239
+Class sad : Precision : 0.179, Recall : 1.000, F1 : 0.303
+Class angry : Precision : 0.186, Recall : 1.000, F1 : 0.314
+Ignoring the Others class, Macro Precision : 0.1668, Macro Recall : 1.0000, Macro F1 : 0.2860
+Ignoring the Others class, Micro TP : 3019, FP : 15077, FN : 0
+Accuracy : 0.4995, Micro Precision : 0.1668, Micro Recall : 1.0000, Micro F1 : 0.2860
+----------------------------------------
+Fold 2/5
+Building model...
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+input_3 (InputLayer)         (None, 100)               0         
+_________________________________________________________________
+embedding_3 (Embedding)      (None, 100, 300)          5026200   
+_________________________________________________________________
+bidirectional_3 (Bidirection (None, 256)               439296    
+_________________________________________________________________
+dense_3 (Dense)              (None, 4)                 1028      
+=================================================================
+Total params: 5,466,524
+Trainable params: 440,324
+Non-trainable params: 5,026,200
+_________________________________________________________________
+Train on 24128 samples, validate on 6032 samples
+Epoch 1/20
+ - 31s - loss: 1.2694 - acc: 0.4850 - val_loss: 1.2425 - val_acc: 0.5040
+Epoch 2/20
+ - 30s - loss: 1.2492 - acc: 0.4935 - val_loss: 1.2400 - val_acc: 0.5040
+Epoch 3/20
+ - 31s - loss: 1.2462 - acc: 0.4935 - val_loss: 1.2457 - val_acc: 0.5040

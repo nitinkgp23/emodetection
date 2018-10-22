@@ -106,7 +106,7 @@ config = {
           "lstm_dim" : 128,
           "learning_rate" : 0.01,
           "dropout" : 0.4,
-          "num_epochs" : 20
+          "num_epochs" : 10
         }
 
 

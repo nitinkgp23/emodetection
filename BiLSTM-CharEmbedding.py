@@ -52,7 +52,7 @@ os.path.dirname(__file__)
 
 config = {
           "train_data_path" : "data/train.txt",
-          "test_data_path" : "data/devwithoutlabels.txt",
+          "test_data_path" : "data/testwithoutlabels.txt",
           "solution_path" : "test.txt",
           "embedding_matrix_path" : "data/embedding_conceptnet.npy",   ## change this accordingly
           "emoji_dict_path" : "data/emoji_dict.txt",

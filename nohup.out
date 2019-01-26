@@ -270,3 +270,350 @@ Using TensorFlow backend.
 Creating solution file...
 Completed. Model parameters: 
 Learning rate : 0.010, LSTM Dim : 128, Dropout : 0.400, Batch_size : 256
+Processing training data...
+Processing test data...
+Extracting tokens...
+Found 14838 unique tokens.
+Populating embedding matrix...
+Found 417195 word vectors.
+Extracting tokens/ characters...
+Found 134 unique charactertokens.
+__________________________________________________________________________________________________
+Layer (type)                    Output Shape         Param #     Connected to                     
+==================================================================================================
+input_2 (InputLayer)            (None, 100, 15)      0                                            
+__________________________________________________________________________________________________
+input_1 (InputLayer)            (None, 100)          0                                            
+__________________________________________________________________________________________________
+time_distributed_1 (TimeDistrib (None, 100, 15, 10)  1340        input_2[0][0]                    
+__________________________________________________________________________________________________
+embedding_1 (Embedding)         (None, 100, 300)     4451700     input_1[0][0]                    
+__________________________________________________________________________________________________
+time_distributed_2 (TimeDistrib (None, 100, 80)      16320       time_distributed_1[0][0]         
+__________________________________________________________________________________________________
+concatenate_1 (Concatenate)     (None, 100, 380)     0           embedding_1[0][0]                
+                                                                 time_distributed_2[0][0]         
+__________________________________________________________________________________________________
+bidirectional_2 (Bidirectional) (None, 256)          521216      concatenate_1[0][0]              
+__________________________________________________________________________________________________
+dense_1 (Dense)                 (None, 4)            1028        bidirectional_2[0][0]            
+==================================================================================================
+Total params: 4,991,604
+Trainable params: 539,904
+Non-trainable params: 4,451,700
+__________________________________________________________________________________________________
+Starting k-fold cross validation...
+----------------------------------------
+Fold 1/5
+Building model...
+__________________________________________________________________________________________________
+Layer (type)                    Output Shape         Param #     Connected to                     
+==================================================================================================
+input_4 (InputLayer)            (None, 100, 15)      0                                            
+__________________________________________________________________________________________________
+input_3 (InputLayer)            (None, 100)          0                                            
+__________________________________________________________________________________________________
+time_distributed_3 (TimeDistrib (None, 100, 15, 15)  2010        input_4[0][0]                    
+__________________________________________________________________________________________________
+embedding_3 (Embedding)         (None, 100, 300)     4451700     input_3[0][0]                    
+__________________________________________________________________________________________________
+time_distributed_4 (TimeDistrib (None, 100, 96)      24576       time_distributed_3[0][0]         
+__________________________________________________________________________________________________
+concatenate_2 (Concatenate)     (None, 100, 396)     0           embedding_3[0][0]                
+                                                                 time_distributed_4[0][0]         
+__________________________________________________________________________________________________
+bidirectional_4 (Bidirectional) (None, 320)          712960      concatenate_2[0][0]              
+__________________________________________________________________________________________________
+dense_2 (Dense)                 (None, 4)            1284        bidirectional_4[0][0]            
+==================================================================================================
+Total params: 5,192,530
+Trainable params: 740,830
+Non-trainable params: 4,451,700
+__________________________________________________________________________________________________
+Train on 24128 samples, validate on 6032 samples
+Epoch 1/20
+ - 95s - loss: 1.1905 - acc: 0.5051 - precision: 0.2473 - recall: 0.9894 - val_loss: 0.8320 - val_acc: 0.6502 - val_precision: 0.2500 - val_recall: 1.0000
+Epoch 2/20
+ - 94s - loss: 0.7596 - acc: 0.6987 - precision: 0.2500 - recall: 1.0000 - val_loss: 0.5421 - val_acc: 0.8160 - val_precision: 0.2500 - val_recall: 1.0000
+Epoch 3/20
+ - 94s - loss: 1.1926 - acc: 0.4167 - precision: 0.2500 - recall: 1.0000 - val_loss: 1.3111 - val_acc: 0.5046 - val_precision: 0.2500 - val_recall: 1.0000
+Epoch 4/20
+ - 94s - loss: 0.4858 - acc: 0.8200 - precision: 0.2500 - recall: 1.0000 - val_loss: 0.4432 - val_acc: 0.8430 - val_precision: 0.2500 - val_recall: 1.0000
+Epoch 5/20
+ - 94s - loss: 0.3891 - acc: 0.8619 - precision: 0.2500 - recall: 1.0000 - val_loss: 0.3139 - val_acc: 0.8922 - val_precision: 0.2500 - val_recall: 1.0000
+Epoch 6/20
+ - 94s - loss: 0.3004 - acc: 0.8936 - precision: 0.2500 - recall: 1.0000 - val_loss: 0.3379 - val_acc: 0.8796 - val_precision: 0.2500 - val_recall: 1.0000
+Epoch 7/20
+ - 94s - loss: 0.2616 - acc: 0.9077 - precision: 0.2500 - recall: 1.0000 - val_loss: 0.3026 - val_acc: 0.8941 - val_precision: 0.2500 - val_recall: 1.0000
+Epoch 8/20
+ - 94s - loss: 0.2324 - acc: 0.9169 - precision: 0.2500 - recall: 1.0000 - val_loss: 0.3853 - val_acc: 0.8622 - val_precision: 0.2500 - val_recall: 1.0000
+Epoch 9/20
+ - 94s - loss: 0.2118 - acc: 0.9242 - precision: 0.2500 - recall: 1.0000 - val_loss: 0.3013 - val_acc: 0.9017 - val_precision: 0.2500 - val_recall: 1.0000
+Epoch 10/20
+ - 93s - loss: 0.1914 - acc: 0.9319 - precision: 0.2500 - recall: 1.0000 - val_loss: 0.3201 - val_acc: 0.8994 - val_precision: 0.2500 - val_recall: 1.0000
+Epoch 11/20
+ - 94s - loss: 0.1705 - acc: 0.9385 - precision: 0.2500 - recall: 1.0000 - val_loss: 0.2832 - val_acc: 0.9065 - val_precision: 0.2500 - val_recall: 1.0000
+Epoch 12/20
+ - 94s - loss: 0.1514 - acc: 0.9456 - precision: 0.2500 - recall: 1.0000 - val_loss: 0.3160 - val_acc: 0.9042 - val_precision: 0.2500 - val_recall: 1.0000
+Epoch 13/20
+ - 94s - loss: 0.1377 - acc: 0.9499 - precision: 0.2500 - recall: 1.0000 - val_loss: 0.3210 - val_acc: 0.9067 - val_precision: 0.2500 - val_recall: 1.0000
+Epoch 14/20
+ - 94s - loss: 0.1255 - acc: 0.9547 - precision: 0.2500 - recall: 1.0000 - val_loss: 0.3610 - val_acc: 0.9017 - val_precision: 0.2500 - val_recall: 1.0000
+Epoch 15/20
+ - 94s - loss: 0.1097 - acc: 0.9605 - precision: 0.2500 - recall: 1.0000 - val_loss: 0.4079 - val_acc: 0.8952 - val_precision: 0.2500 - val_recall: 1.0000
+Epoch 16/20
+ - 94s - loss: 0.1047 - acc: 0.9612 - precision: 0.2500 - recall: 1.0000 - val_loss: 0.3683 - val_acc: 0.9029 - val_precision: 0.2500 - val_recall: 1.0000
+Epoch 17/20
+ - 94s - loss: 0.0924 - acc: 0.9656 - precision: 0.2500 - recall: 1.0000 - val_loss: 0.3882 - val_acc: 0.9040 - val_precision: 0.2500 - val_recall: 1.0000
+Epoch 18/20
+ - 94s - loss: 0.0909 - acc: 0.9654 - precision: 0.2500 - recall: 1.0000 - val_loss: 0.3855 - val_acc: 0.9067 - val_precision: 0.2500 - val_recall: 1.0000
+Epoch 19/20
+ - 94s - loss: 0.0812 - acc: 0.9694 - precision: 0.2500 - recall: 1.0000 - val_loss: 0.3833 - val_acc: 0.9118 - val_precision: 0.2500 - val_recall: 1.0000
+Epoch 20/20
+ - 94s - loss: 0.0751 - acc: 0.9727 - precision: 0.2500 - recall: 1.0000 - val_loss: 0.4172 - val_acc: 0.8989 - val_precision: 0.2500 - val_recall: 1.0000
+True Positives per class :  [2792.  689.  972.  969.]
+False Positives per class :  [271.  86.  99. 154.]
+False Negatives per class :  [251. 144.  99. 116.]
+Class happy : Precision : 0.889, Recall : 0.827, F1 : 0.857
+Class sad : Precision : 0.908, Recall : 0.908, F1 : 0.908
+Class angry : Precision : 0.863, Recall : 0.893, F1 : 0.878
+Ignoring the Others class, Macro Precision : 0.8865, Macro Recall : 0.8759, Macro F1 : 0.8812
+Ignoring the Others class, Micro TP : 2630, FP : 339, FN : 359
+Accuracy : 0.8989, Micro Precision : 0.8858, Micro Recall : 0.8799, Micro F1 : 0.8828
+----------------------------------------
+Fold 2/5
+Building model...
+__________________________________________________________________________________________________
+Layer (type)                    Output Shape         Param #     Connected to                     
+==================================================================================================
+input_6 (InputLayer)            (None, 100, 15)      0                                            
+__________________________________________________________________________________________________
+input_5 (InputLayer)            (None, 100)          0                                            
+__________________________________________________________________________________________________
+time_distributed_5 (TimeDistrib (None, 100, 15, 15)  2010        input_6[0][0]                    
+__________________________________________________________________________________________________
+embedding_5 (Embedding)         (None, 100, 300)     4451700     input_5[0][0]                    
+__________________________________________________________________________________________________
+time_distributed_6 (TimeDistrib (None, 100, 96)      24576       time_distributed_5[0][0]         
+__________________________________________________________________________________________________
+concatenate_3 (Concatenate)     (None, 100, 396)     0           embedding_5[0][0]                
+                                                                 time_distributed_6[0][0]         
+__________________________________________________________________________________________________
+bidirectional_6 (Bidirectional) (None, 320)          712960      concatenate_3[0][0]              
+__________________________________________________________________________________________________
+dense_3 (Dense)                 (None, 4)            1284        bidirectional_6[0][0]            
+==================================================================================================
+Total params: 5,192,530
+Trainable params: 740,830
+Non-trainable params: 4,451,700
+__________________________________________________________________________________________________
+Train on 24128 samples, validate on 6032 samples
+Epoch 1/20
+ - 96s - loss: 1.2629 - acc: 0.4883 - precision: 0.2473 - recall: 0.9894 - val_loss: 1.2168 - val_acc: 0.5469 - val_precision: 0.2500 - val_recall: 1.0000
+Epoch 2/20
+ - 94s - loss: 0.7870 - acc: 0.6843 - precision: 0.2500 - recall: 1.0000 - val_loss: 0.5243 - val_acc: 0.7966 - val_precision: 0.2500 - val_recall: 1.0000
+Epoch 3/20
+ - 94s - loss: 0.4950 - acc: 0.8218 - precision: 0.2500 - recall: 1.0000 - val_loss: 0.3379 - val_acc: 0.8806 - val_precision: 0.2500 - val_recall: 1.0000
+Epoch 4/20
+ - 94s - loss: 0.3623 - acc: 0.8732 - precision: 0.2500 - recall: 1.0000 - val_loss: 0.3331 - val_acc: 0.8899 - val_precision: 0.2500 - val_recall: 1.0000
+Epoch 5/20
+ - 94s - loss: 0.3094 - acc: 0.8895 - precision: 0.2500 - recall: 1.0000 - val_loss: 0.3269 - val_acc: 0.8888 - val_precision: 0.2500 - val_recall: 1.0000
+Epoch 6/20
+ - 94s - loss: 0.2672 - acc: 0.9051 - precision: 0.2500 - recall: 1.0000 - val_loss: 0.2829 - val_acc: 0.9063 - val_precision: 0.2500 - val_recall: 1.0000
+Epoch 7/20
+ - 94s - loss: 0.2409 - acc: 0.9142 - precision: 0.2500 - recall: 1.0000 - val_loss: 0.2896 - val_acc: 0.9004 - val_precision: 0.2500 - val_recall: 1.0000
+Epoch 8/20
+ - 94s - loss: 0.2112 - acc: 0.9257 - precision: 0.2500 - recall: 1.0000 - val_loss: 0.3112 - val_acc: 0.8909 - val_precision: 0.2500 - val_recall: 1.0000
+Epoch 9/20
+ - 94s - loss: 0.2307 - acc: 0.9184 - precision: 0.2500 - recall: 1.0000 - val_loss: 0.2907 - val_acc: 0.9057 - val_precision: 0.2500 - val_recall: 1.0000
+Epoch 10/20
+ - 94s - loss: 0.1823 - acc: 0.9354 - precision: 0.2500 - recall: 1.0000 - val_loss: 0.2936 - val_acc: 0.9004 - val_precision: 0.2500 - val_recall: 1.0000
+Epoch 11/20
+ - 94s - loss: 0.1667 - acc: 0.9397 - precision: 0.2500 - recall: 1.0000 - val_loss: 0.2949 - val_acc: 0.9058 - val_precision: 0.2500 - val_recall: 1.0000
+Epoch 12/20
+ - 94s - loss: 0.1425 - acc: 0.9474 - precision: 0.2500 - recall: 1.0000 - val_loss: 0.3371 - val_acc: 0.8999 - val_precision: 0.2500 - val_recall: 1.0000
+Epoch 13/20
+ - 94s - loss: 0.1284 - acc: 0.9532 - precision: 0.2500 - recall: 1.0000 - val_loss: 0.3721 - val_acc: 0.8917 - val_precision: 0.2500 - val_recall: 1.0000
+Epoch 14/20
+ - 94s - loss: 0.1138 - acc: 0.9591 - precision: 0.2500 - recall: 1.0000 - val_loss: 0.3594 - val_acc: 0.8916 - val_precision: 0.2500 - val_recall: 1.0000
+Epoch 15/20
+ - 94s - loss: 0.1044 - acc: 0.9617 - precision: 0.2500 - recall: 1.0000 - val_loss: 0.3677 - val_acc: 0.9045 - val_precision: 0.2500 - val_recall: 1.0000
+Epoch 16/20
+ - 94s - loss: 0.0940 - acc: 0.9647 - precision: 0.2500 - recall: 1.0000 - val_loss: 0.3955 - val_acc: 0.8951 - val_precision: 0.2500 - val_recall: 1.0000
+Epoch 17/20
+ - 94s - loss: 0.0891 - acc: 0.9672 - precision: 0.2500 - recall: 1.0000 - val_loss: 0.4023 - val_acc: 0.8959 - val_precision: 0.2500 - val_recall: 1.0000
+Epoch 18/20
+ - 94s - loss: 0.0858 - acc: 0.9685 - precision: 0.2500 - recall: 1.0000 - val_loss: 0.4123 - val_acc: 0.8927 - val_precision: 0.2500 - val_recall: 1.0000
+Epoch 19/20
+ - 94s - loss: 0.0775 - acc: 0.9707 - precision: 0.2500 - recall: 1.0000 - val_loss: 0.4347 - val_acc: 0.9010 - val_precision: 0.2500 - val_recall: 1.0000
+Epoch 20/20
+ - 94s - loss: 0.0724 - acc: 0.9731 - precision: 0.2500 - recall: 1.0000 - val_loss: 0.4345 - val_acc: 0.8954 - val_precision: 0.2500 - val_recall: 1.0000
+True Positives per class :  [2637.  812.  976.  976.]
+False Positives per class :  [155. 131. 117. 228.]
+False Negatives per class :  [378.  74.  81.  98.]
+Class happy : Precision : 0.861, Recall : 0.916, F1 : 0.888
+Class sad : Precision : 0.893, Recall : 0.923, F1 : 0.908
+Class angry : Precision : 0.811, Recall : 0.909, F1 : 0.857
+Ignoring the Others class, Macro Precision : 0.8549, Macro Recall : 0.9162, Macro F1 : 0.8845
+Ignoring the Others class, Micro TP : 2764, FP : 476, FN : 253
+Accuracy : 0.8954, Micro Precision : 0.8531, Micro Recall : 0.9161, Micro F1 : 0.8835
+----------------------------------------
+Fold 3/5
+Building model...
+__________________________________________________________________________________________________
+Layer (type)                    Output Shape         Param #     Connected to                     
+==================================================================================================
+input_8 (InputLayer)            (None, 100, 15)      0                                            
+__________________________________________________________________________________________________
+input_7 (InputLayer)            (None, 100)          0                                            
+__________________________________________________________________________________________________
+time_distributed_7 (TimeDistrib (None, 100, 15, 15)  2010        input_8[0][0]                    
+__________________________________________________________________________________________________
+embedding_7 (Embedding)         (None, 100, 300)     4451700     input_7[0][0]                    
+__________________________________________________________________________________________________
+time_distributed_8 (TimeDistrib (None, 100, 96)      24576       time_distributed_7[0][0]         
+__________________________________________________________________________________________________
+concatenate_4 (Concatenate)     (None, 100, 396)     0           embedding_7[0][0]                
+                                                                 time_distributed_8[0][0]         
+__________________________________________________________________________________________________
+bidirectional_8 (Bidirectional) (None, 320)          712960      concatenate_4[0][0]              
+__________________________________________________________________________________________________
+dense_4 (Dense)                 (None, 4)            1284        bidirectional_8[0][0]            
+==================================================================================================
+Total params: 5,192,530
+Trainable params: 740,830
+Non-trainable params: 4,451,700
+__________________________________________________________________________________________________
+Train on 24128 samples, validate on 6032 samples
+Epoch 1/20
+ - 96s - loss: 1.2311 - acc: 0.4842 - precision: 0.2473 - recall: 0.9894 - val_loss: 1.0579 - val_acc: 0.5632 - val_precision: 0.2500 - val_recall: 1.0000
+Epoch 2/20
+ - 94s - loss: 0.6805 - acc: 0.7382 - precision: 0.2500 - recall: 1.0000 - val_loss: 0.5765 - val_acc: 0.8080 - val_precision: 0.2500 - val_recall: 1.0000
+Epoch 3/20
+ - 94s - loss: 0.4192 - acc: 0.8523 - precision: 0.2500 - recall: 1.0000 - val_loss: 0.3721 - val_acc: 0.8728 - val_precision: 0.2500 - val_recall: 1.0000
+Epoch 4/20
+ - 94s - loss: 0.3425 - acc: 0.8817 - precision: 0.2500 - recall: 1.0000 - val_loss: 0.3410 - val_acc: 0.8763 - val_precision: 0.2500 - val_recall: 1.0000
+Epoch 5/20
+ - 94s - loss: 0.2888 - acc: 0.8981 - precision: 0.2500 - recall: 1.0000 - val_loss: 0.2741 - val_acc: 0.9083 - val_precision: 0.2500 - val_recall: 1.0000
+Epoch 6/20
+ - 94s - loss: 0.2577 - acc: 0.9073 - precision: 0.2500 - recall: 1.0000 - val_loss: 0.2709 - val_acc: 0.9073 - val_precision: 0.2500 - val_recall: 1.0000
+Epoch 7/20
+ - 94s - loss: 0.2604 - acc: 0.9077 - precision: 0.2500 - recall: 1.0000 - val_loss: 0.2831 - val_acc: 0.9105 - val_precision: 0.2500 - val_recall: 1.0000
+Epoch 8/20
+ - 94s - loss: 0.2037 - acc: 0.9271 - precision: 0.2500 - recall: 1.0000 - val_loss: 0.2692 - val_acc: 0.9143 - val_precision: 0.2500 - val_recall: 1.0000
+Epoch 9/20
+ - 94s - loss: 0.1859 - acc: 0.9342 - precision: 0.2500 - recall: 1.0000 - val_loss: 0.2883 - val_acc: 0.9072 - val_precision: 0.2500 - val_recall: 1.0000
+Epoch 10/20
+ - 94s - loss: 0.1631 - acc: 0.9399 - precision: 0.2500 - recall: 1.0000 - val_loss: 0.2856 - val_acc: 0.9065 - val_precision: 0.2500 - val_recall: 1.0000
+Epoch 11/20
+ - 94s - loss: 0.1546 - acc: 0.9441 - precision: 0.2500 - recall: 1.0000 - val_loss: 0.2947 - val_acc: 0.9126 - val_precision: 0.2500 - val_recall: 1.0000
+Epoch 12/20
+ - 94s - loss: 0.1315 - acc: 0.9522 - precision: 0.2500 - recall: 1.0000 - val_loss: 0.3185 - val_acc: 0.9073 - val_precision: 0.2500 - val_recall: 1.0000
+Epoch 13/20
+ - 94s - loss: 0.1201 - acc: 0.9564 - precision: 0.2500 - recall: 1.0000 - val_loss: 0.3012 - val_acc: 0.9078 - val_precision: 0.2500 - val_recall: 1.0000
+Epoch 14/20
+ - 94s - loss: 0.1335 - acc: 0.9521 - precision: 0.2500 - recall: 1.0000 - val_loss: 3.7097 - val_acc: 0.1596 - val_precision: 0.2500 - val_recall: 1.0000
+Epoch 15/20
+ - 94s - loss: 0.3289 - acc: 0.8966 - precision: 0.2500 - recall: 1.0000 - val_loss: 0.7122 - val_acc: 0.7560 - val_precision: 0.2500 - val_recall: 1.0000
+Epoch 16/20
+ - 94s - loss: 0.1560 - acc: 0.9431 - precision: 0.2500 - recall: 1.0000 - val_loss: 0.3294 - val_acc: 0.9133 - val_precision: 0.2500 - val_recall: 1.0000
+Epoch 17/20
+ - 94s - loss: 0.1360 - acc: 0.9521 - precision: 0.2500 - recall: 1.0000 - val_loss: 0.9259 - val_acc: 0.7097 - val_precision: 0.2500 - val_recall: 1.0000
+Epoch 18/20
+ - 94s - loss: 0.1577 - acc: 0.9423 - precision: 0.2500 - recall: 1.0000 - val_loss: 0.3319 - val_acc: 0.9080 - val_precision: 0.2500 - val_recall: 1.0000
+Epoch 19/20
+ - 94s - loss: 0.0965 - acc: 0.9645 - precision: 0.2500 - recall: 1.0000 - val_loss: 0.3393 - val_acc: 0.9100 - val_precision: 0.2500 - val_recall: 1.0000
+Epoch 20/20
+ - 94s - loss: 0.0918 - acc: 0.9649 - precision: 0.2500 - recall: 1.0000 - val_loss: 0.3303 - val_acc: 0.9092 - val_precision: 0.2500 - val_recall: 1.0000
+True Positives per class :  [2727.  753.  999. 1005.]
+False Positives per class :  [200. 104.  70. 174.]
+False Negatives per class :  [267.  76.  96. 109.]
+Class happy : Precision : 0.879, Recall : 0.908, F1 : 0.893
+Class sad : Precision : 0.935, Recall : 0.912, F1 : 0.923
+Class angry : Precision : 0.852, Recall : 0.902, F1 : 0.877
+Ignoring the Others class, Macro Precision : 0.8885, Macro Recall : 0.9076, Macro F1 : 0.8980
+Ignoring the Others class, Micro TP : 2757, FP : 348, FN : 281
+Accuracy : 0.9092, Micro Precision : 0.8879, Micro Recall : 0.9075, Micro F1 : 0.8976
+
+============= Metrics =================
+Average Cross-Validation Accuracy : 
+0.9011
+Average Cross-Validation Micro Precision :
+0.8756
+Average Cross-Validation Micro Recall :
+0.9012
+Average Cross-Validation Micro F1 :
+0.8880
+
+======================================
+Retraining model on entire data to create solution file
+__________________________________________________________________________________________________
+Layer (type)                    Output Shape         Param #     Connected to                     
+==================================================================================================
+input_10 (InputLayer)           (None, 100, 15)      0                                            
+__________________________________________________________________________________________________
+input_9 (InputLayer)            (None, 100)          0                                            
+__________________________________________________________________________________________________
+time_distributed_9 (TimeDistrib (None, 100, 15, 15)  2010        input_10[0][0]                   
+__________________________________________________________________________________________________
+embedding_9 (Embedding)         (None, 100, 300)     4451700     input_9[0][0]                    
+__________________________________________________________________________________________________
+time_distributed_10 (TimeDistri (None, 100, 96)      24576       time_distributed_9[0][0]         
+__________________________________________________________________________________________________
+concatenate_5 (Concatenate)     (None, 100, 396)     0           embedding_9[0][0]                
+                                                                 time_distributed_10[0][0]        
+__________________________________________________________________________________________________
+bidirectional_10 (Bidirectional (None, 320)          712960      concatenate_5[0][0]              
+__________________________________________________________________________________________________
+dense_5 (Dense)                 (None, 4)            1284        bidirectional_10[0][0]           
+==================================================================================================
+Total params: 5,192,530
+Trainable params: 740,830
+Non-trainable params: 4,451,700
+__________________________________________________________________________________________________
+Epoch 1/20
+ - 116s - loss: 1.2521 - acc: 0.4822 - precision: 0.2479 - recall: 0.9915
+Epoch 2/20
+ - 113s - loss: 0.9123 - acc: 0.6192 - precision: 0.2500 - recall: 1.0000
+Epoch 3/20
+ - 113s - loss: 0.4253 - acc: 0.8508 - precision: 0.2500 - recall: 1.0000
+Epoch 4/20
+ - 113s - loss: 0.3242 - acc: 0.8884 - precision: 0.2500 - recall: 1.0000
+Epoch 5/20
+ - 113s - loss: 0.2739 - acc: 0.9049 - precision: 0.2500 - recall: 1.0000
+Epoch 6/20
+ - 113s - loss: 0.2455 - acc: 0.9135 - precision: 0.2500 - recall: 1.0000
+Epoch 7/20
+ - 113s - loss: 0.2184 - acc: 0.9226 - precision: 0.2500 - recall: 1.0000
+Epoch 8/20
+ - 114s - loss: 0.2021 - acc: 0.9293 - precision: 0.2500 - recall: 1.0000
+Epoch 9/20
+ - 113s - loss: 0.2211 - acc: 0.9215 - precision: 0.2500 - recall: 1.0000
+Epoch 10/20
+ - 113s - loss: 0.1751 - acc: 0.9366 - precision: 0.2500 - recall: 1.0000
+Epoch 11/20
+ - 113s - loss: 0.1473 - acc: 0.9466 - precision: 0.2500 - recall: 1.0000
+Epoch 12/20
+ - 113s - loss: 0.1360 - acc: 0.9499 - precision: 0.2500 - recall: 1.0000
+Epoch 13/20
+ - 113s - loss: 0.1244 - acc: 0.9542 - precision: 0.2500 - recall: 1.0000
+Epoch 14/20
+ - 113s - loss: 0.1168 - acc: 0.9563 - precision: 0.2500 - recall: 1.0000
+Epoch 15/20
+ - 113s - loss: 0.1092 - acc: 0.9597 - precision: 0.2500 - recall: 1.0000
+Epoch 16/20
+ - 113s - loss: 0.1009 - acc: 0.9630 - precision: 0.2500 - recall: 1.0000
+Epoch 17/20
+ - 113s - loss: 0.0938 - acc: 0.9640 - precision: 0.2500 - recall: 1.0000
+Epoch 18/20
+ - 113s - loss: 0.0875 - acc: 0.9669 - precision: 0.2500 - recall: 1.0000
+Epoch 19/20
+ - 113s - loss: 0.0862 - acc: 0.9678 - precision: 0.2500 - recall: 1.0000
+Epoch 20/20
+ - 113s - loss: 0.0785 - acc: 0.9699 - precision: 0.2500 - recall: 1.0000
+Using TensorFlow backend.
+/home/jasabanta/miniconda3/envs/dl/lib/python3.5/site-packages/sklearn/base.py:251: UserWarning: Trying to unpickle estimator LabelPropagation from version 0.18 when using version 0.20.0. This might lead to breaking code or invalid results. Use at your own risk.
+  UserWarning)
+Creating solution file...
+Completed. Model parameters: 
+Learning rate : 0.010, LSTM Dim : 128, Dropout : 0.400, Batch_size : 256
